@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, Button, message, InputNumber, Select } from 'antd';
+import { Modal, Form, Input, Button, message, Select } from 'antd';
 import { ProductType } from '../../types/product.types';
 import { useAppDispatch, useAppSelector } from '../../store/hooks.ts';
-import { fetchCategories, fetchBrands, fetchSuppliers } from '../../store/masterDataSlice.ts';
+import { fetchCategories, fetchBrands, fetchSuppliers, fetchSubcategories, fetchUOMs } from '../../store/masterDataSlice.ts';
 
 interface CreateProductModalProps {
   visible: boolean;
@@ -22,7 +22,7 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
-  const { categories, brands, suppliers, loading: masterDataLoading } = useAppSelector(
+  const { categories, subcategories, uoms, loading: masterDataLoading } = useAppSelector(
     (state) => state.masterData
   );
 
@@ -32,7 +32,8 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({
       dispatch(fetchCategories());
       dispatch(fetchBrands());
       dispatch(fetchSuppliers());
-      
+      dispatch(fetchUOMs());
+
       if (productData) {
         form.setFieldsValue(productData);
       } else {
@@ -44,6 +45,10 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({
   const handleSubmit = async (values: any) => {
     setLoading(true);
     try {
+      const payload = {
+        ...values,
+        categoryId: Number(values.categoryId),
+      };
       const url = editMode && productData 
         ? `http://localhost:8000/products/${productData.productId }`
         : 'http://localhost:8000/products';
@@ -55,7 +60,7 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -121,35 +126,54 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({
               value: category.categoryId,
               label: category.category_name,
             }))}
+            onChange={(value) => {
+              dispatch(fetchSubcategories(value));
+              form.setFieldsValue({ subCategoryId: undefined });
+            }}
           />
         </Form.Item>
 
         <Form.Item
-          label="Brand"
-          name="brandId"
-          rules={[{ required: true, message: 'Please select a brand' }]}
+          label="Subcategory"
+          name="subCategoryId"
         >
           <Select
-            placeholder="Select a brand"
+            placeholder="Select a subcategory"
             loading={masterDataLoading}
-            options={brands.map(brand => ({
-              value: brand.brandId,
-              label: brand.brandName,
+            disabled={!form.getFieldValue('categoryId')}
+            options={subcategories.map(subcategory => ({
+              value: subcategory.subCategoryId,
+              label: subcategory.name,
             }))}
           />
         </Form.Item>
 
         <Form.Item
-          label="Supplier"
-          name="supplierId"
-          rules={[{ required: true, message: 'Please select a supplier' }]}
+          label="Buying UOM"
+          name="buyingUomId"
+          rules={[{ required: true, message: 'Please select a Buying UOM' }]}
         >
           <Select
-            placeholder="Select a supplier"
+            placeholder="Select a Buying UOM"
             loading={masterDataLoading}
-            options={suppliers.map(supplier => ({
-              value: supplier.supplierId,
-              label: supplier.name,
+            options={uoms.map(uom => ({
+              value: uom.uomId,
+              label: uom.uomName,
+            }))}
+          />
+        </Form.Item>
+
+        <Form.Item
+          label="Selling UOM"
+          name="sellingUomId"
+          rules={[{ required: true, message: 'Please select a Selling UOM' }]}
+        >
+          <Select
+            placeholder="Select a Selling UOM"
+            loading={masterDataLoading}
+            options={uoms.map(uom => ({
+              value: uom.uomId,
+              label: uom.uomName,
             }))}
           />
         </Form.Item>
@@ -161,27 +185,7 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({
           <Input.TextArea rows={3} placeholder="Enter product description" />
         </Form.Item>
 
-        <Form.Item
-          label="Price"
-          name="price"
-          rules={[{ required: true, message: 'Please enter price' }]}
-        >
-          <InputNumber
-            style={{ width: '100%' }}
-            min={0}
-            step={0.01}
-            precision={2}
-            placeholder="Enter price"
-          />
-        </Form.Item>
 
-        <Form.Item
-          label="SKU"
-          name="sku"
-          rules={[{ required: true, message: 'Please enter SKU' }]}
-        >
-          <Input placeholder="Enter SKU" />
-        </Form.Item>
 
         <Form.Item
           label="Image URL"

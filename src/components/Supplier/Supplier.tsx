@@ -11,7 +11,7 @@ const Supplier: React.FC = () => {
   const [suppliers, setSuppliers] = useState<SupplierType[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(15);
   const [totalSuppliers, setTotalSuppliers] = useState(0);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editingSupplier, setEditingSupplier] = useState<SupplierType | null>(null);

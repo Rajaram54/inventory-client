@@ -11,7 +11,7 @@ const Warehouse: React.FC = () => {
   const [warehouses, setWarehouses] = useState<WarehouseType[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(15);
   const [totalWarehouses, setTotalWarehouses] = useState(0);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editingWarehouse, setEditingWarehouse] = useState<WarehouseType | null>(null);

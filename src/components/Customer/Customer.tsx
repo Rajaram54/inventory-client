@@ -11,7 +11,7 @@ const Customer: React.FC = () => {
   const [customers, setCustomers] = useState<CustomerType[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(15);
   const [totalCustomers, setTotalCustomers] = useState(0);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<CustomerType | null>(null);

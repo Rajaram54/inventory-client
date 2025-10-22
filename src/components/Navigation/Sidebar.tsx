@@ -8,7 +8,8 @@ import {
   TrademarkOutlined,
   ShopOutlined,
   TruckOutlined,
-  ShoppingCartOutlined
+  ShoppingCartOutlined,
+  SwapOutlined
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
@@ -31,6 +32,22 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange }) => {
       label: 'Dashboard',
     },
     {
+      key: 'inventory',
+      icon: <ShoppingOutlined />,
+      label: 'Inventory',
+    },
+    {
+      key: 'stock-movement',
+      icon: <SwapOutlined />,
+      label: 'Stock Movement',
+      children: [
+        {
+          key: 'add-new-movement',
+          label: 'Add New Movement',
+        },
+      ],
+    },
+    {
       key: 'master-data',
       icon: <AppstoreOutlined />,
       label: 'Master Data',
@@ -41,14 +58,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange }) => {
           label: 'Customer',
         },
         {
-          key: 'inventory',
-          icon: <ShoppingOutlined />,
-          label: 'Inventory',
-        },
-        {
           key: 'category',
           icon: <AppstoreOutlined />,
           label: 'Category',
+        },
+        {
+          key: 'subcategory',
+          icon: <AppstoreOutlined />,
+          label: 'Subcategory',
         },
         {
           key: 'brand',

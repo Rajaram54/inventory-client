@@ -11,7 +11,7 @@ const Brand: React.FC = () => {
   const [brands, setBrands] = useState<BrandType[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(15);
   const [totalBrands, setTotalBrands] = useState(0);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editingBrand, setEditingBrand] = useState<BrandType | null>(null);

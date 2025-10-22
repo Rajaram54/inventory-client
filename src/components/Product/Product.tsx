@@ -11,7 +11,7 @@ const Product: React.FC = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(15);
   const [totalProducts, setTotalProducts] = useState(0);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [editingProduct, setEditingProduct] = useState<ProductType | null>(null);
@@ -61,8 +61,8 @@ const Product: React.FC = () => {
   const columns = [
     {
       title: 'ID',
-      dataIndex: 'productId ',
-      key: 'productId ',
+      dataIndex: 'productId',
+      key: 'productId',
       width: 80,
     },
     {
@@ -72,21 +72,9 @@ const Product: React.FC = () => {
       width: 150,
     },
     {
-      title: 'Category ID',
-      dataIndex: 'categoryId',
-      key: 'categoryId',
-      width: 100,
-    },
-    {
-      title: 'Brand ID',
-      dataIndex: 'brandId',
-      key: 'brandId',
-      width: 100,
-    },
-    {
-      title: 'Supplier ID',
-      dataIndex: 'supplierId',
-      key: 'supplierId',
+      title: 'Category',
+      dataIndex: ['category', 'category_name'],
+      key: 'category',
       width: 100,
     },
     {
@@ -94,12 +82,6 @@ const Product: React.FC = () => {
       dataIndex: 'description',
       key: 'description',
       width: 250,
-    },
-    {
-      title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
-      width: 100,
     },
     {
       title: 'SKU',
@@ -153,7 +135,7 @@ const Product: React.FC = () => {
         columns={columns}
         dataSource={products}
         loading={loading}
-        rowKey="productId "
+        rowKey="productId"
         scroll={{ x: 1000 }}
         pagination={{
           current: currentPage,

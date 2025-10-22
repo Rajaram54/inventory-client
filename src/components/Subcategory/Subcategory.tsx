@@ -2,32 +2,32 @@ import React, { useState, useEffect } from 'react';
 import { Card, Typography, Button, Space, message, Popconfirm } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import AntdTableWrapper from '../wrappers/antdTableWrapper.tsx';
-import { CategoryType } from '../../types/category.types';
-import CreateCategoryModal from './CreateCategoryModal.tsx';
+import { SubcategoryType } from '../../types/subcategory.types';
+import CreateSubcategoryModal from './CreateSubcategoryModal.tsx';
 
 const { Title } = Typography;
 
-const Category: React.FC = () => {
-  const [categories, setCategories] = useState<CategoryType[]>([]);
+const Subcategory: React.FC = () => {
+  const [subcategories, setSubcategories] = useState<SubcategoryType[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
-  const [totalCategories, setTotalCategories] = useState(0);
+  const [totalSubcategories, setTotalSubcategories] = useState(0);
   const [createModalVisible, setCreateModalVisible] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<CategoryType | null>(null);
+  const [editingSubcategory, setEditingSubcategory] = useState<SubcategoryType | null>(null);
 
   useEffect(() => {
-    fetchCategories(currentPage, pageSize);
+    fetchSubcategories(currentPage, pageSize);
   }, [currentPage, pageSize]);
 
-  const handleDelete = async (categoryId: number) => {
+  const handleDelete = async (subCategoryId: number) => {
     try {
-      const response = await fetch(`http://localhost:8000/categories/${categoryId}`, {
+      const response = await fetch(`http://localhost:8000/subcategories/${subCategoryId}`, {
         method: 'DELETE',
       });
 
       if (!response.ok) {
-        let errorMessage = 'Failed to delete category';
+        let errorMessage = 'Failed to delete subcategory';
         try {
           const errorData = await response.json();
           if (errorData.message) {
@@ -42,18 +42,18 @@ const Category: React.FC = () => {
         throw new Error(errorMessage);
       }
 
-      message.success('Category deleted successfully!');
-      fetchCategories(currentPage, pageSize); // Refresh the table
+      message.success('Subcategory deleted successfully!');
+      fetchSubcategories(currentPage, pageSize); // Refresh the table
     } catch (error) {
-      console.error('Error deleting category:', error);
-      message.error(error.message || 'Failed to delete category. Please try again.');
+      console.error('Error deleting subcategory:', error);
+      message.error(error.message || 'Failed to delete subcategory. Please try again.');
     }
   };
 
-  const fetchCategories = async (page: number, limit: number) => {
+  const fetchSubcategories = async (page: number, limit: number) => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8000/categories?page=${page}&limit=${limit}`);
+      const response = await fetch(`http://localhost:8000/subcategories?page=${page}&limit=${limit}`);
       if (!response.ok) {
         let errorMessage = `HTTP error! status: ${response.status}`;
         try {
@@ -74,22 +74,22 @@ const Category: React.FC = () => {
       
       // Check if the response has the expected structure
       if (apiResponse && Array.isArray(apiResponse.data)) {
-        setCategories(apiResponse.data);
-        setTotalCategories(apiResponse.total || 0);
+        setSubcategories(apiResponse.data);
+        setTotalSubcategories(apiResponse.total || 0);
       } else if (Array.isArray(apiResponse)) {
         // Handle case where API returns array directly
-        setCategories(apiResponse);
-        setTotalCategories(apiResponse.length);
+        setSubcategories(apiResponse);
+        setTotalSubcategories(apiResponse.length);
       } else {
         console.error('Unexpected API response structure:', apiResponse);
-        setCategories([]);
-        setTotalCategories(0);
+        setSubcategories([]);
+        setTotalSubcategories(0);
       }
     } catch (error) {
-      console.error('Error fetching categories:', error);
-      message.error(error.message || 'Failed to load categories. Please check your connection.');
-      setCategories([]);
-      setTotalCategories(0);
+      console.error('Error fetching subcategories:', error);
+      message.error(error.message || 'Failed to load subcategories. Please check your connection.');
+      setSubcategories([]);
+      setTotalSubcategories(0);
     } finally {
       setLoading(false);
     }
@@ -98,15 +98,21 @@ const Category: React.FC = () => {
   const columns = [
     {
       title: 'ID',
-      dataIndex: 'categoryId',
-      key: 'categoryId',
+      dataIndex: 'subCategoryId',
+      key: 'subCategoryId',
       width: 80,
     },
     {
       title: 'Name',
-      dataIndex: 'category_name',
-      key: 'category_name',
+      dataIndex: 'name',
+      key: 'name',
       width: 150,
+    },
+    {
+      title: 'Category ID',
+      dataIndex: 'categoryId',
+      key: 'categoryId',
+      width: 100,
     },
     {
       title: 'Description',
@@ -118,20 +124,20 @@ const Category: React.FC = () => {
       title: 'Actions',
       key: 'actions',
       width: 100,
-      render: (_, record: CategoryType) => (
+      render: (_, record: SubcategoryType) => (
         <Space size="middle">
           <Button
             type="primary"
             icon={<EditOutlined />}
             size="small"
             onClick={() => {
-              setEditingCategory(record);
+              setEditingSubcategory(record);
               setCreateModalVisible(true);
             }}
           />
           <Popconfirm
-            title="Are you sure you want to delete this category?"
-            onConfirm={() => handleDelete(record.categoryId)}
+            title="Are you sure you want to delete this subcategory?"
+            onConfirm={() => handleDelete(record.subCategoryId)}
             okText="Yes"
             cancelText="No"
           >
@@ -150,25 +156,25 @@ const Category: React.FC = () => {
   return (
     <Card>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <Title level={2}>Category Management</Title>
+        <Title level={2}>Subcategory Management</Title>
         <Button type="primary" icon={<PlusOutlined />} onClick={() => setCreateModalVisible(true)}>
-          Add Category
+          Add Subcategory
         </Button>
       </div>
       
       <AntdTableWrapper
         columns={columns}
-        dataSource={categories}
+        dataSource={subcategories}
         loading={loading}
-        rowKey="categoryId"
+        rowKey="subCategoryId"
         scroll={{ x: 1000 }}
         pagination={{
           current: currentPage,
           pageSize: pageSize,
-          total: totalCategories,
+          total: totalSubcategories,
           showSizeChanger: true,
           showQuickJumper: true,
-          showTotal: (total) => `Total ${total} categories`,
+          showTotal: (total) => `Total ${total} subcategories`,
           onChange: (page, pageSize) => {
             setCurrentPage(page);
             setPageSize(pageSize);
@@ -180,31 +186,31 @@ const Category: React.FC = () => {
         }}
       />
       
-      <CreateCategoryModal
+      <CreateSubcategoryModal
         visible={createModalVisible}
         onCancel={() => {
           setCreateModalVisible(false);
-          setEditingCategory(null);
+          setEditingSubcategory(null);
         }}
-        onSuccess={(category) => {
-          if (editingCategory) {
-            // Update existing category in the list
-            setCategories(prev => prev.map(c => 
-              c.categoryId === category.categoryId ? category : c
+        onSuccess={(subcategory) => {
+          if (editingSubcategory) {
+            // Update existing subcategory in the list
+            setSubcategories(prev => prev.map(c => 
+              c.subCategoryId === subcategory.subCategoryId ? subcategory : c
             ));
-            setEditingCategory(null);
+            setEditingSubcategory(null);
           } else {
-            // Add new category to the list
-            setCategories(prev => [category, ...(prev || [])]);
-            setTotalCategories(prev => (prev || 0) + 1);
+            // Add new subcategory to the list
+            setSubcategories(prev => [subcategory, ...(prev || [])]);
+            setTotalSubcategories(prev => (prev || 0) + 1);
           }
           setCreateModalVisible(false);
         }}
-        editMode={!!editingCategory}
-        categoryData={editingCategory}
+        editMode={!!editingSubcategory}
+        subcategoryData={editingSubcategory}
       />
     </Card>
   );
 };
 
-export default Category;
+export default Subcategory;

@@ -3,11 +3,15 @@ import { message } from 'antd';
 import { CategoryType } from '../types/category.types';
 import { BrandType } from '../types/brand.types';
 import { SupplierType } from '../types/supplier.types';
+import { SubcategoryType } from '../types/subcategory.types';
+import { UOMType } from '../types/uom.types';
 
 interface MasterDataState {
   categories: CategoryType[];
   brands: BrandType[];
   suppliers: SupplierType[];
+  subcategories: SubcategoryType[];
+  uoms: UOMType[];
   loading: boolean;
   error: string | null;
 }
@@ -16,6 +20,8 @@ const initialState: MasterDataState = {
   categories: [],
   brands: [],
   suppliers: [],
+  subcategories: [],
+  uoms: [],
   loading: false,
   error: null,
 };
@@ -51,6 +57,33 @@ export const fetchSuppliers = createAsyncThunk(
     const response = await fetch('http://localhost:8000/suppliers/list');
     if (!response.ok) {
       throw new Error('Failed to fetch suppliers');
+    }
+    const data = await response.json();
+    return Array.isArray(data) ? data : data.data || [];
+  }
+);
+
+export const fetchSubcategories = createAsyncThunk(
+  'masterData/fetchSubcategories',
+  async (categoryId?: number) => {
+    const url = categoryId
+      ? `http://localhost:8000/subcategories/list?categoryId=${categoryId}`
+      : 'http://localhost:8000/subcategories/list';
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Failed to fetch subcategories');
+    }
+    const data = await response.json();
+    return Array.isArray(data) ? data : data.data || [];
+  }
+);
+
+export const fetchUOMs = createAsyncThunk(
+  'masterData/fetchUOMs',
+  async () => {
+    const response = await fetch('http://localhost:8000/shared/uom');
+    if (!response.ok) {
+      throw new Error('Failed to fetch UOMs');
     }
     const data = await response.json();
     return Array.isArray(data) ? data : data.data || [];
@@ -119,6 +152,34 @@ const masterDataSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch suppliers';
         message.error('Failed to load suppliers');
+      })
+      // Fetch Subcategories
+      .addCase(fetchSubcategories.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchSubcategories.fulfilled, (state, action) => {
+        state.loading = false;
+        state.subcategories = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchSubcategories.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to fetch subcategories';
+        message.error('Failed to load subcategories');
+      })
+      // Fetch UOMs
+      .addCase(fetchUOMs.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchUOMs.fulfilled, (state, action) => {
+        state.loading = false;
+        state.uoms = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchUOMs.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to fetch UOMs';
+        message.error('Failed to load UOMs');
       })
       // Refresh All
       .addCase(refreshAllData.pending, (state) => {

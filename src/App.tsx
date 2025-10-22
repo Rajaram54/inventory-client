@@ -9,10 +9,13 @@ import Dashboard from './components/Dashboard/Dashboard.tsx';
 import Customer from './components/Customer/Customer.tsx';
 import Inventory from './components/Inventory/Inventory.tsx';
 import Category from './components/Category/Category.tsx';
+import Subcategory from './components/Subcategory/Subcategory.tsx';
 import Brand from './components/Brand/Brand.tsx';
 import Product from './components/Product/Product.tsx';
 import Supplier from './components/Supplier/Supplier.tsx';
 import Warehouse from './components/Warehouse/Warehouse.tsx';
+import StockMovement from './components/StockMovement/StockMovement.tsx';
+import AddNewMovement from './components/StockMovement/AddNewMovement.tsx';
 import './App.css';
 
 const { Header, Content } = Layout;
@@ -43,6 +46,10 @@ const AppContent: React.FC = () => {
   const handleTabChange = (tab: string) => {
     if (tab === 'dashboard') {
       navigate('/dashboard');
+    } else if (tab === 'stock-movement') {
+      navigate('/stock-movement');
+    } else if (tab === 'add-new-movement') {
+      navigate('/add-new-movement');
     } else {
       navigate(`/${tab}`);
     }
@@ -53,10 +60,13 @@ const AppContent: React.FC = () => {
     if (path === '/customer') return 'customer';
     if (path === '/inventory') return 'inventory';
     if (path === '/category') return 'category';
+    if (path === '/subcategory') return 'subcategory';
     if (path === '/brand') return 'brand';
     if (path === '/supplier') return 'supplier';
     if (path === '/warehouse') return 'warehouse';
     if (path === '/product') return 'product';
+    if (path === '/stock-movement') return 'stock-movement';
+    if (path === '/add-new-movement') return 'add-new-movement';
     return 'dashboard';
   };
 
@@ -94,10 +104,13 @@ const AppContent: React.FC = () => {
               <Route path="/customer" element={<Customer />} />
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/category" element={<Category />} />
+              <Route path="/subcategory" element={<Subcategory />} />
               <Route path="/warehouse" element={<Warehouse />} />
               <Route path="/brand" element={<Brand />} />
               <Route path="/supplier" element={<Supplier />} />
               <Route path="/product" element={<Product />} />
+              <Route path="/stock-movement" element={<StockMovement />} />
+              <Route path="/add-new-movement" element={<AddNewMovement />} />
             </Routes>
             
             {searchResults.length > 0 && (
