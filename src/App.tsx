@@ -11,7 +11,9 @@ import Inventory from './components/Inventory/Inventory.tsx';
 import Category from './components/Category/Category.tsx';
 import Subcategory from './components/Subcategory/Subcategory.tsx';
 import Brand from './components/Brand/Brand.tsx';
+import Attribute from './components/Attribute/Attribute.tsx';
 import Product from './components/Product/Product.tsx';
+import CreateProduct from './components/Product/CreateProduct.tsx';
 import Supplier from './components/Supplier/Supplier.tsx';
 import Warehouse from './components/Warehouse/Warehouse.tsx';
 import StockMovement from './components/StockMovement/StockMovement.tsx';
@@ -62,6 +64,7 @@ const AppContent: React.FC = () => {
     if (path === '/category') return 'category';
     if (path === '/subcategory') return 'subcategory';
     if (path === '/brand') return 'brand';
+    if (path === '/attribute') return 'attribute';
     if (path === '/supplier') return 'supplier';
     if (path === '/warehouse') return 'warehouse';
     if (path === '/product') return 'product';
@@ -109,6 +112,8 @@ const AppContent: React.FC = () => {
               <Route path="/brand" element={<Brand />} />
               <Route path="/supplier" element={<Supplier />} />
               <Route path="/product" element={<Product />} />
+              <Route path="/attributes" element={<Attribute/>} />
+              <Route path="/create-product" element={<CreateProduct />} />
               <Route path="/stock-movement" element={<StockMovement />} />
               <Route path="/add-new-movement" element={<AddNewMovement />} />
             </Routes>

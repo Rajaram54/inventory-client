@@ -3,18 +3,17 @@ import { Card, Typography, Button, Space, message, Popconfirm } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import AntdTableWrapper from '../wrappers/antdTableWrapper.tsx';
 import { ProductType } from '../../types/product.types';
-import CreateProductModal from './CreateProductModal.tsx';
+import { useNavigate } from 'react-router-dom';
 
 const { Title } = Typography;
 
 const Product: React.FC = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
   const [totalProducts, setTotalProducts] = useState(0);
-  const [createModalVisible, setCreateModalVisible] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<ProductType | null>(null);
 
   useEffect(() => {
     fetchProducts(currentPage, pageSize);
@@ -93,20 +92,17 @@ const Product: React.FC = () => {
       title: 'Actions',
       key: 'actions',
       width: 100,
-      render: (_, record: ProductType) => (
+      render: (_: any, record: ProductType) => (
         <Space size="middle">
           <Button
             type="primary"
             icon={<EditOutlined />}
             size="small"
-            onClick={() => {
-              setEditingProduct(record);
-              setCreateModalVisible(true);
-            }}
+            onClick={() => navigate('/create-product', { state: { product: record } })}
           />
           <Popconfirm
             title="Are you sure you want to delete this product?"
-            onConfirm={() => handleDelete(record.productId )}
+            onConfirm={() => handleDelete(record.productId)}
             okText="Yes"
             cancelText="No"
           >
@@ -126,7 +122,7 @@ const Product: React.FC = () => {
     <Card>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <Title level={2}>Product Management</Title>
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => setCreateModalVisible(true)}>
+        <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate('/create-product')}>
           Add Product
         </Button>
       </div>
@@ -154,30 +150,7 @@ const Product: React.FC = () => {
           },
         }}
       />
-      
-      <CreateProductModal
-        visible={createModalVisible}
-        onCancel={() => {
-          setCreateModalVisible(false);
-          setEditingProduct(null);
-        }}
-        onSuccess={(product) => {
-          if (editingProduct) {
-            // Update existing product in the list
-            setProducts(prev => prev.map(p => 
-              p.productId  === product.productId  ? product : p
-            ));
-            setEditingProduct(null);
-          } else {
-            // Add new product to the list
-            setProducts(prev => [product, ...(prev || [])]);
-            setTotalProducts(prev => (prev || 0) + 1);
-          }
-          setCreateModalVisible(false);
-        }}
-        editMode={!!editingProduct}
-        productData={editingProduct}
-      />
+
     </Card>
   );
 };

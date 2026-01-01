@@ -9,7 +9,8 @@ import {
   ShopOutlined,
   TruckOutlined,
   ShoppingCartOutlined,
-  SwapOutlined
+  SwapOutlined,
+  HomeOutlined
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
@@ -81,6 +82,11 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange }) => {
           key: 'warehouse',
           icon: <TruckOutlined />,
           label: 'Warehouse',
+        },
+         {
+          key: 'attributes',
+          icon: <HomeOutlined />,
+          label: 'Attributes',
         },
       ],
     },
